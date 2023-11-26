@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import { render } from "@testing-library/react";
+import React from "react";
+import axios from "axios";
+import "./app.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {  // app is a react component.
+    state = { advice: '' } // global obj contains important things of a component ( advice in this case) 
+
+    componentDidMount() {   // react lifecycle method executes at when the component is rendered. 
+        // we used to method bcoz we want to render a advice when app component is rendered initially.
+        this.fetchAdvice();
+
+    }
+
+    fetchAdvice = () => {
+        axios.get("https://api.adviceslip.com/advice")
+            .then((response) => {
+                const { advice } = response.data.slip;
+                this.setState({ advice })
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+
+
+
+    render = () => { // render is alos a react lifecycle method.
+        const { advice } = this.state;
+        return (
+            <div className="app">
+                <div className="card">
+                    <h1 className="heading">{advice}</h1>
+                    <button className="button" onClick={this.fetchAdvice}>
+                        <span>GIVE ME ADVICE</span>
+                    </button>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default App;
